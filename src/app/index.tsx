@@ -6,7 +6,6 @@ export default function App() {
   const [zadanie, setZadanie] = useState('');
   const [lista, setLista] = useState<string[]>([]);
 
-  // Dodawanie tekstu do listy
   const dodajZadanie = () => {
     if (zadanie.trim() !== '') {
       setLista([...lista, zadanie]);
@@ -14,7 +13,6 @@ export default function App() {
     }
   };
 
-  // Funkcja do usuwania zadania z listy na podstawie indeksu
   const usunZadanie = (indexDoUsuniecia: number) => {
     setLista(lista.filter((_, index) => index !== indexDoUsuniecia));
   };
@@ -24,7 +22,6 @@ export default function App() {
       <Stack screenOptions={{ headerShown: false }}/>
       <Text style={styles.tytul}>Lista Zadań</Text>
 
-      {/* Pole tekstowe i przycisk */}
       <TextInput
         style={styles.input}
         placeholder="Wpisz zadanie, które chcesz dodać"
@@ -35,11 +32,9 @@ export default function App() {
         <Text style={styles.tekstPrzyciskuDodaj}>Dodaj</Text>
       </TouchableOpacity>
 
-      {/* Wyświetlanie wpisanych rzeczy */}
       <FlatList
         data={lista}
         renderItem={({ item, index }) => (
-          //Wiersz z zadaniem i przyciskiem do usuwania
           <View style={styles.wiersz}>
             <Text style={styles.element}>- {item}</Text>
             
