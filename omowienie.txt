@@ -1,0 +1,103 @@
+1. Importy i konfiguracja
+TypeScript
+import { Stack } from 'expo-router';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+Stack: Komponent z nawigacji Expo Router.
+
+useState: Hook Reacta zarządzający stanem (dadanymi, które zmieniają się w czasie działania aplikacji).
+
+Komponenty widoku:
+
+<View>: Odpowiednik <div> – główny kontener elementów.
+
+<Text>: Odpowiednik <p> lub <span> – wymagany dla każdego tekstu.
+
+<TextInput>: Pole do wprowadzania tekstu przez użytkownika.
+
+<FlatList>: Wydajna lista renderująca dynamiczne dane.
+
+<TouchableOpacity>: Przycisk z animacją przyciemnienia po kliknięciu, który zastąpił sztywny komponent <Button>.
+
+2. Zarządzanie stanem (State)
+TypeScript
+const [zadanie, setZadanie] = useState('');
+const [lista, setLista] = useState<string[]>([]);
+zadanie: Przechowuje aktualny tekst wpisywany w danym momencie do pola <TextInput>.
+
+lista: Tablica ciągów tekstowych (string[]), która przechowuje wszystkie dodane zadania.
+
+3. Logika (Funkcje biznesowe)
+Dodawanie zadania
+TypeScript
+const dodajZadanie = () => {
+  if (zadanie.trim() !== '') {
+    setLista([...lista, zadanie]);
+    setZadanie('');
+  }
+};
+zadanie.trim() !== '': Sprawdza, czy wpisany tekst nie składa się ze samych spacji.
+
+setLista([...lista, zadanie]): Używa operatora spread (...), aby stworzyć nową tablicę zawierającą wszystkie dotychczasowe zadania oraz nowe zadanie na końcu.
+
+setZadanie(''): Czyści pole tekstowe po dodaniu.
+
+Usuwanie zadania
+TypeScript
+const usunZadanie = (indexDoUsuniecia: number) => {
+  setLista(lista.filter((_, index) => index !== indexDoUsuniecia));
+};
+Metoda .filter() tworzy nową tablicę, pozostawiając tylko te elementy, których pozycja (index) jest inna niż ta kliknięta przez użytkownika.
+
+4. Interfejs użytkownika (JSX)
+Ukrycie nagłówka nawigacji
+TypeScript
+<Stack screenOptions={{ headerShown: false }}/>
+Chowa domyślny, górny pasek nawigacyjny oferowany przez Expo Router, aby aplikacja zajmowała pełny ekran.
+
+Wprowadzanie danych i przycisk "Dodaj"
+TypeScript
+<TextInput
+  style={styles.input}
+  placeholder="Wpisz zadanie, które chcesz dodać"
+  value={zadanie}
+  onChangeText={setZadanie}
+/>
+<TouchableOpacity style={styles.przyciskDodaj} onPress={dodajZadanie}>
+  <Text style={styles.tekstPrzyciskuDodaj}>Dodaj</Text>
+</TouchableOpacity>
+onChangeText={setZadanie}: Aktualizuje stan zadanie przy każdym naciśnięciu klawisza.
+
+<TouchableOpacity>: Służy jako spersonalizowany przycisk, który dzięki stylom wygląda identycznie na systemach Android oraz iOS.
+
+Wyświetlanie dynamicznej listy (FlatList)
+TypeScript
+<FlatList
+  data={lista}
+  renderItem={({ item, index }) => (
+    <View style={styles.wiersz}>
+      <Text style={styles.element}>- {item}</Text>
+      
+      <TouchableOpacity 
+        style={styles.przyciskUsun} 
+        onPress={() => usunZadanie(index)}
+      >
+        <Text style={styles.tekstUsun}>Usuń</Text>
+      </TouchableOpacity>
+    </View>
+  )}
+/>
+data={lista}: Wskazuje źródło danych dla listy.
+
+renderItem: Funkcja, która dla każdego elementu tablicy generuje wiersz z tekstem zadania oraz czerwonym przyciskiem "Usuń".
+
+onPress={() => usunZadanie(index)}: Przekazuje dokładny numer indeksu wiersza, który ma zostać usunięty.
+
+5. Kluczowe elementy stylizacji (StyleSheet)
+flex: 1: W kontenerze głównym powoduje, że aplikacja rozciąga się na 100% dostępnej wysokości ekranu.
+
+flexDirection: 'row' (w klasie wiersz): Układa tekst zadania oraz przycisk "Usuń" poziomo obok siebie (domyślnie w React Native elementy układają się pionowo).
+
+justifyContent: 'space-between': Rozpycha tekst na lewą stronę, a przycisk "Usuń" na prawą krawędź wiersza.
+
+flex: 1 (w klasie element): Sprawia, że długi tekst zadania zawija się i nie nachodzi na przycisk usuwania.
